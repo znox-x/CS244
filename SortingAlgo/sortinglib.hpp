@@ -4,6 +4,74 @@
 #include <cmath>
 using namespace std;
 
+List* bubbleSort(ArrayList* list, int n){
+    if (n <= 1) {
+        return list;
+    }
+
+    int last_swap = 1;
+    for (int i = 1; i < n; i++) {
+        if (list->get(i) > list->get(i+1)) {
+            last_swap = i;
+            list->swap(i, i+1);
+            list->print();
+        }
+    }
+
+    return bubbleSort((ArrayList*)list, last_swap);
+}
+
+List* bubbleSort(LinkedList* list, int n){
+    if (n <= 1) {
+        return list;
+    }
+
+    int last_swap = 1;
+    for (int i = 1; i < n; i++) {
+        if (list->get(i) > list->get(i+1)) {
+            last_swap = i;
+            list->swap(i, i+1);
+            list->print();
+        }
+    }
+
+    return bubbleSort((LinkedList*)list, last_swap);
+}
+
+List* selectionSort(ArrayList* list, int curr){
+    if (curr == list->size())   return list;
+
+    int min = list->get(curr);
+    int idx = curr;
+    for (int i = curr+1; i <= list->size(); i++) {
+        if (list->get(i) < min) {
+            min = list->get(i);
+            idx = i;
+        }
+    }
+
+    list->swap(curr, idx);
+    list->print();
+    return selectionSort((ArrayList*)list, curr+1);
+}
+
+List* selectionSort(LinkedList* list, int curr){
+    if (curr == list->size())   return list;
+
+    int min = list->get(curr);
+    int idx = curr;
+    for (int i = curr+1; i <= list->size(); i++) {
+        if (list->get(i) < min) {
+            min = list->get(i);
+            idx = i;
+        }
+    }
+
+    list->swap(curr, idx);
+    list->print();
+    return selectionSort((LinkedList*)list, curr+1);
+}
+
 List* mergeSort(LinkedList* list){
     // base case: list size is 1
     if(list->size() <= 1){
@@ -107,5 +175,53 @@ List* mergeSort(LinkedList* list){
 }
 
 List* mergeSort(ArrayList* list){
+    if (list->size() == 1) {
+        return list;
+    }
+
+    int mid = ceil(list->size()/2.0);
+    List* left = new ArrayList(mid);
+    List* right = new ArrayList(list->size()-mid);
     
+    for (int i = 1; i <= list->size(); i++) {
+        if (i <= mid) {
+            left->insert(list->get(i));
+        } else {
+            right->insert(list->get(i));
+        }
+    }
+    
+    cout << "My left list: ";
+    left->print();
+    left = mergeSort((ArrayList*)left);
+
+    cout << "My right list: ";
+    right->print();
+    right = mergeSort((ArrayList*)right);
+
+    List* sorted = new ArrayList(left->size() + right->size());
+    int i = 1, j = 1;
+    while (i <= left->size() && j <= right->size()) {
+        int left_n = left->get(i);
+        int right_n = right->get(j);
+
+        if (left_n < right_n) {
+            sorted->insert(left_n);
+            i++;
+        } else {
+            sorted->insert(right_n);
+            j++;
+        }
+    }
+    
+    for (i; i <= left->size(); i++) {
+        sorted->insert(left->get(i));
+    }
+    for (j; j <= right->size(); j++) {
+        sorted->insert(right->get(j));
+    }
+
+    cout << "Sorted: ";
+    sorted->print();
+    return sorted;
 }

@@ -58,6 +58,67 @@ class LinkedList : public List {
             return index;
         }
 
+        void swap(int a, int b) {
+            if (a == b) return;
+
+            node *m = NULL;
+            node *m_prev = NULL;
+            node *n = NULL;
+            node *n_prev = NULL;
+            
+            node *currnode = head;
+            int count = 0;
+            while (currnode != NULL) {
+                count++;
+                if (count == a-1) {
+                    m_prev = currnode;
+                }
+                if (count == a) {
+                    m = currnode;
+                }
+                if (count == b-1) {
+                    n_prev = currnode;
+                }
+                if (count == b) {
+                    n = currnode;
+                }
+
+                currnode = currnode->next;
+            }
+            
+            if (m == head) {
+                if (m->next != n) {
+                    n_prev->next = m;
+                }
+
+                node* temp = m->next;
+                m->next = n->next;
+                n->next = temp;
+                
+                if (n == tail) {
+                    tail = m;
+                }
+                head = n;
+            } else {
+                if (m->next == n) {
+                    m_prev->next = n;
+                    m->next = n->next;
+                    n->next = m;
+                } else {
+                    m_prev->next = n;
+                    n_prev->next = m;
+
+                    node* temp = m->next;
+                    m->next = n->next;
+                    n->next = temp;
+                }
+
+                if (n == tail) {
+                    tail = m;
+                }
+            }
+        }
+
         void print() {
             node* currnode = head;
             if (head == NULL && tail == NULL) {
