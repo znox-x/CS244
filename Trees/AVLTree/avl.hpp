@@ -6,13 +6,17 @@
 class AVLTree : public BinaryTree {
     BinaryTree* tree;
 
-    // restructuring
+    // --- HELPER METHODS ---
+
+    // accepts a node and returns the node's balance factor (height of left subtree - height of right subtree)
     int balance_factor(node* n) {
-        int left = n->left ? n->left->height() : 0;
-        int right = n->right ? n->right->height() : 0;
+        int left = n->left ? n->left->height() : 0;         // if no left  subtree = 0
+        int right = n->right ? n->right->height() : 0;      //   ''  right      ''
         return left - right;
     }
 
+    // function that recursively checks if the node follows the property of an avl tree
+    // property: balance factor must be between -1 and 1 inclusive
     void bf_check(node* n) {
         cout << "Checking node " << n->elem << "..." << endl;
 
@@ -29,6 +33,7 @@ class AVLTree : public BinaryTree {
         bf_check(n->parent);
     }
 
+    // function that is called when a node is not balanced
     void restructure(node* n) {
         cout << "Restructuring via ";
         int bf = balance_factor(n);
