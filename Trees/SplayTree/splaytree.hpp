@@ -12,45 +12,51 @@ class SplayTree : public BinaryTree{
     void splay (node* x) {
         // ends recursion when the node passed is at the root
         if (x == tree->getRoot())   return;
-
+        
+        // getting access to the nodes parent & grandparent for structure checking
         node* y = x->parent;
         node* z = y->parent;
 
         cout << "Performing ";
 
-        if (z) {
+        if (z) {                                            // z is null when your node x's parent is the root
             if (z->right == y) {
-                if (y->right == x) {
+                if (y->right == x) {                        // structure looks like "\"
                     cout << "zig-zig left..." << endl;
                     zig_zig_left(x);
-                } else {
+                } else {                                    // structure looks like ">"
                     cout << "zig-zag left..." << endl;
                     zig_zag_left(x);
                 }
             } else {
-                if (y->left == x) {
+                if (y->left == x) {                         // structure looks like "/"
                     cout << "zig-zig right..." << endl;
                     zig_zig_right(x);
-                } else {
+                } else {                                    // structure looks like "<"
                     cout << "zig-zag right..." << endl;
                     zig_zag_right(x);
                 }
             }
         } else {
-            if (y->left == x) {
+            if (y->left == x) {                             // "/" but with two nodes only
                 cout << "zig right..." << endl;
                 zig_right(x);
-            } else {
+            } else {                                        // "\" but with two nodes only
                 cout << "zig left..." << endl;
                 zig_left(x);
             }
         }
 
+        // recursive call (passes itself since only the tree structure has changed, not this pointer)
         splay(x);
     }
 
     // rotation helpers
-    void zig_left(node* x) {
+    /* 
+    basically the same implementation with the avl restructure,
+    but take note that the parameters are using the node that is being splayed
+    */
+    void zig_left(node* x) {                                        // check step-by-step in the .png file (wip)
         node* y = x->parent;
 
         cout << "x = " << x->elem << ", y = " << y->elem << endl;
