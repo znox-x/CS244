@@ -5,7 +5,7 @@ using namespace std;
 int main() {
     SplayTree* splay = new SplayTree;
     char op;
-    int num, parent;
+    int num, res;
     do {
         cout << "Op: ";
         cin >> op;
@@ -15,24 +15,18 @@ int main() {
                         break;
             
             case 'i':   cin >> num;
-                        parent = splay->insert(num);
-                        if (parent == -1) {
-                            cout << "Node already exists" << endl;
-                        } else if (parent == 0) {
-                            cout << "Node " << num << " added as root" << endl;
-                        } else {
-                            cout << "Node " << num << " located as child of " << parent << endl;
-                        }
+                        res = splay->insert(num);
+                        cout << "Node " << num << " moved to root" << endl;
                         break;
             
             case 'r':   cin >> num;
-                        parent = splay->remove(num);
-                        if (parent == -1) {
+                        res = splay->remove(num);
+                        if (res == -1) {
                             cout << "Node not found." << endl;
-                        } else if (parent == 0) {
+                        } else if (res == 0) {
                             cout << "Root " << num << " is removed" << endl;
                         } else {
-                            cout << "Node " << num << " removed using child of " << parent << endl;
+                            cout << "Node " << num << " removed using child of " << res << endl;
                         }
                         break;
 
