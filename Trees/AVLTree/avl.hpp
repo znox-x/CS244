@@ -16,7 +16,7 @@ class AVLTree : public BinaryTree {
     }
 
     // function that recursively checks if the node follows the property of an avl tree
-    // property: balance factor must be between -1 and 1 inclusive
+    // height-balance property: balance factor must be between -1 and 1 inclusive
     void bf_check(node* n) {
         cout << "Checking node " << n->elem << "..." << endl;
 
@@ -38,29 +38,31 @@ class AVLTree : public BinaryTree {
         cout << "Restructuring via ";
         int bf = balance_factor(n);
         
-        if (bf == 2) {
-            int bf_left = balance_factor(n->left);
-            if (bf_left == 1) {
+        if (bf == 2) {                                      // +bf means height of left child is higher (left-right)
+            int bf_left = balance_factor(n->left);          // check bf of left child (to know what restructure function to use)
+            if (bf_left == 1) {                             // +bf on left child means the tree looks like "/"
                 cout << "zig right" << endl;
-                zig_right(n->left->left, n->left, n);
-            } else {
+                zig_right(n->left);
+            } else {                                        // -bf on left child means the tree looks like "<"
                 cout << "zigzag right" << endl;
-                zigzag_right(n->left->right, n->left, n);
+                zigzag_right(n->left);
             }
-        } else {
+        } else {                                            // vice versa
             int bf_right = balance_factor(n->right);
             if (bf_right == -1) {
                 cout << "zig left" << endl;
-                zig_left(n->right->right, n->right, n);
+                zig_left(n->right);
             } else {
                 cout << "zigzag left" << endl;
-                zigzag_left(n->right->left, n->right, n);
+                zigzag_left(n->right);
             }
         }
     }
 
-    void zig_left(node* x, node* y, node* z) {
-        // z = left of y, x = right of y
+    // the following restructure helpers accept the child (y) of the node (z) that violates the property
+    // refer to the labeling of the nodes in ppt
+    void zig_left(node* y) {
+        node* z = y->parent;                                    // the node that has bf > 1 || bf < -1
 
         z->right = y->left;                                     // 1. right of z = T2
         if (y->left) y->left->parent = z;                       // ~1. parent of T2 = z (if T2 exists)
@@ -75,8 +77,8 @@ class AVLTree : public BinaryTree {
         z->parent = y;                                          // ~2. parent of z = y
     }
 
-    void zig_right(node* x, node* y, node* z) {
-        // x = left of y, z = right of y
+    void zig_right(node* y) {
+        node* z = y->parent;
 
         z->left = y->right;                                     // 1. left of z = T3
         if (y->right) y->right->parent = z;                     // ~1. parent of T3 = z (if T3 exists)
@@ -91,14 +93,15 @@ class AVLTree : public BinaryTree {
         z->parent = y;                                          // ~2. parent of z = y
     }
 
-    void zigzag_left(node* x, node* y, node* z) {
-        zig_right(x->left, x, y);
-        zig_left(y, x, z);
+    // zigzag opeartions do two rotations
+    void zigzag_left(node* y) {
+        zig_right(y->left);
+        zig_left(y->parent);
     }
 
-    void zigzag_right(node* x, node* y, node* z) {
-        zig_left(x->right, x, y);
-        zig_right(y, x, z);
+    void zigzag_right(node* y) {
+        zig_left(y->right);
+        zig_right(y->parent);
     }
 
     public:
@@ -121,15 +124,19 @@ class AVLTree : public BinaryTree {
     }
 
     int insert(int num) {
+        // if num already exists
         if (search(num)) {
             return -1;
         }
 
+        // if its a rootless tree
         if (!tree->getRoot()) {
             tree->addRoot(num);
             return 0;
         }
 
+        // if num is lesser, checks if there exists a node at its left child, if yes then moves curr, if no then new node is inserted there
+        // if num is greater, checks if there exists a node at its right child, if yes then moves curr, if no then new node is inserted there
         node* curr = tree->getRoot();
         node* n;
         while (curr) {
@@ -150,11 +157,13 @@ class AVLTree : public BinaryTree {
             }
         }
 
+        // checking height-balance property starting from the parent of the newly inserted node
         bf_check(curr);
         return n->parent ? n->parent->elem : 0;
     }
 
     int remove(int num) {
+        // if node does not exist
         if (!search(num)) {
             return -1;
         }
@@ -162,11 +171,22 @@ class AVLTree : public BinaryTree {
         node* curr = tree->getRoot();
         node* check;
         while (curr) {
+            // traversing...
             if (num < curr->elem) {
                 curr = curr->left;
             } else if (num > curr->elem) {
                 curr = curr->right;
-            } else {
+            }
+            
+            /* if node (x) has two children:
+               -> searches for the leftmost node on the right subtree (y)
+               -> replace elem of x by elem of y
+               -> delete y
+
+               if not, delete the node (check implementation in binarytree.hpp)
+            */
+
+            else {
                 if (curr->left && curr->right) {
                     node* next = curr->right;
                     while (next->left) {
