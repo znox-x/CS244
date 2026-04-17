@@ -49,14 +49,54 @@ class B24Tree {
     }
 
     bool insert(int num) {
+        node* curr = search(num, root);
 
+        if (curr == nullptr) {
+            node* n = new node;
+            n->parent = nullptr;
+            n->insertKeyAt(num, 0);
+            root = n;
+            return true;
+        }
+
+        if (curr->contains(num)) {
+            return false;
+        }
+
+        for (int i = 0; i < curr->size; i++) {
+            if (num < curr->keys[i]) {
+                curr->insertKeyAt(num, i);
+                break;
+            }
+        }
+        if (num > curr->keys[curr->size-1]) {
+            curr->insertKeyAt(num, curr->size);
+        }
+
+        return true;
     }
 
     bool remove(int num) {
-
+        return false;
     }
 
     void print() {
+        node* curr = root;
         
+        if (!curr) {
+            cout << "EMPTY" << endl;
+            return;
+        }
+
+        string prefix = "";
+        while (curr->children[0]) {
+            if (curr->parent == nullptr) {
+                cout << "Root: ";
+            } else {
+                prefix = prefix + "\t";
+            }
+
+            
+        }
     }
 };

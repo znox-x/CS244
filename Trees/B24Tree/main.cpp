@@ -9,17 +9,18 @@ int main() {
     do {
         cout << "Op: ";
         cin >> op;
-        cin >> num;
 
         switch (op)
         {
-        case 'i':   if (tree->insert(num)) {
+        case 'i':   cin >> num;
+                    if (tree->insert(num)) {
                         cout << "Key inserted." << endl;
                     } else {
                         cout << "Key already exists." << endl;
                     }
                     break;
-        case 'r':   if (tree->remove(num)) {
+        case 'r':   cin >> num;
+                    if (tree->remove(num)) {
                         cout << "Key removed." << endl;
                     } else {
                         cout << "Key does not exist." << endl;
