@@ -3,7 +3,7 @@
 struct node {
     node* parent;
     int keys[4];
-    node** children = (node**)malloc(5 * sizeof(node*));
+    node** children = (node**)calloc(5, sizeof(node*));
     int size = 0;
 
     void insertKeyAt(int num, int index) {
