@@ -29,7 +29,7 @@ int findMaximum(item** items, int n, double W) {
     // note: ratios[_][0] is used key for the items[]
     double total = 0;
     for (int i = 0; i < n; i++) {
-        if (W - items[(int)ratios[i][0]]->weight > 0) {
+        if (W - items[(int)ratios[i][0]]->weight >= 0) {
             total += items[(int)ratios[i][0]]->value;
             W -= items[(int)ratios[i][0]]->weight;
         } else {
