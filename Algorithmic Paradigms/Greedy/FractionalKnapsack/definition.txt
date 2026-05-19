@@ -12,3 +12,13 @@ Algorithm Flow
 2. Sort items by ratio in descending order
 3. Iterate through sorted items — if the item fits entirely, take it all and reduce remaining capacity; if it doesn't fit, take only the fraction that fills the remaining capacity, then stop
 4. Return total value
+
+Example
+Capacity W = 50
+Item    Weight  Value   Ratio
+A       10      60      6.0
+B       20      100     5.0
+C       30      120     4.0
+Sorted: A → B → C. 
+Take all of A (remaining: 40, value: $60), take all of B (remaining: 20, value: $160), take 20/30 of C (value: +$80)
+Total: $240
