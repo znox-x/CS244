@@ -1,0 +1,14 @@
+Fractional Knapsack
+
+A greedy algorithm where you fill a knapsack of capacity W with items (each having a weight and value), and you're allowed to take fractions of items.
+
+Goal
+
+Maximize total value without exceeding capacity.
+
+Algorithm Flow
+
+1. Compute ratio = value / weight for each item
+2. Sort items by ratio in descending order
+3. Iterate through sorted items — if the item fits entirely, take it all and reduce remaining capacity; if it doesn't fit, take only the fraction that fills the remaining capacity, then stop
+4. Return total value
