@@ -1,0 +1,29 @@
+LCS — Memoization
+
+A top-down recursive approach that finds the longest common subsequence between two strings, caching results to avoid recomputation.
+
+Goal
+
+Find the length of the longest subsequence present in both strings (characters don't have to be contiguous, just in order).
+
+Algorithm Flow
+
+1. Create a 2D memo table of size m × n initialized to -1, where m and n are the lengths of the two strings
+2. Start the recursive call at the last character of both strings
+3. At each call lcs(i, j) — LCS considering string1 down to index i and string2 down to index j:
+    - If either index hits 0, return 0 (base case)
+    - If the subproblem is already cached, return it
+    - If characters at i and j match, add 1 and recurse on both previous characters
+    - If they don't match, take the max of skipping a character from either string
+4. Store and return the result in the memo table
+5. Answer is at lcs(m, n)
+
+Example
+
+String1 = ABCD, String2 = ACBD
+
+Call lcs(4,4) — D vs D, match → 1 + lcs(3,3)
+Call lcs(3,3) — C vs B, no match → max of lcs(2,3) and lcs(3,2)
+...
+Eventually resolves to 3
+Answer: 3 (ACД → ABC or ABD)
