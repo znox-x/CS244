@@ -1,0 +1,29 @@
+Sudoku Solver
+
+A backtracking algorithm that fills in a partially completed 9x9 Sudoku grid by trying digits one at a time and undoing choices that lead to conflicts.
+
+Goal
+
+Fill every empty cell with a digit from 1 to 9 such that every row, column, and 3x3 box contains each digit exactly once.
+
+Algorithm Flow
+
+1. Find the next empty cell
+2. If no empty cell exists, the puzzle is solved
+3. Try digits 1 to 9 in the empty cell
+4. For each digit, check if it is valid — not already in the same row, column, or 3x3 box
+5. If valid, place the digit and recurse on the next empty cell
+6. If the recursion fails, remove the digit (backtrack) and try the next one
+7. If no digit works, return false to trigger backtracking in the previous call
+
+Example
+
+Given a partially filled grid, say cell (0,0) is empty:
+    - Try 1 — conflicts with row, skip
+    - Try 2 — conflicts with box, skip
+    - Try 3 — valid, place it, move to next empty cell
+    - Next cell fails all digits → backtrack, remove 3 from (0,0)
+    - Try 4 — valid, place it, continue
+    - Eventually the entire grid is filled
+
+Answer: A completely filled valid Sudoku grid, or no solution if none exists.
