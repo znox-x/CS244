@@ -7,7 +7,7 @@ int main() {
     char op;
     int num;
 
-    do {
+    do {    
         cout << "Enter op: ";
         cin >> op;
         switch (op) {
@@ -16,6 +16,13 @@ int main() {
                             cout << "Node inserted." << endl;
                         } else {
                             cout << "Node not inserted." << endl;
+                        }
+                        break;
+            case 'r':   cin >> num;
+                        if (tree->remove(num)) {
+                            cout << "Node removed." << endl;
+                        } else {
+                            cout << "Node not removed or doesn't exist." << endl;
                         }
                         break;
             case 'p':   tree->print();

@@ -13,7 +13,7 @@ class RBTree {
             return y;
         }
 
-        if (!sibling(y) || !sibling(y)->isRed) {
+        if (!sibling(y, y->parent) || !sibling(y, y->parent)->isRed) {
             if (y->left == x) {
                 if (y->parent->left == y) {
                     //      z
@@ -24,7 +24,7 @@ class RBTree {
                     zigright(y);
                     x->isRed = true;
                     y->isRed = false;
-                    sibling(x)->isRed = true;
+                    sibling(x, x->parent)->isRed = true;
                     return y;
                 } else {
                     //   z           z
@@ -35,7 +35,7 @@ class RBTree {
                     zigzagleft(y);
                     x->isRed = false;
                     y->isRed = true;
-                    sibling(y)->isRed = true;
+                    sibling(y, y->parent)->isRed = true;
                     return x;
                 }
             } else {
@@ -48,7 +48,7 @@ class RBTree {
                     zigleft(y);
                     x->isRed = true;
                     y->isRed = false;
-                    sibling(x)->isRed = true;
+                    sibling(x, x->parent)->isRed = true;
                     return y;
                 } else {
                     //      z           z
@@ -59,14 +59,14 @@ class RBTree {
                     zigzagright(y);
                     x->isRed = false;
                     y->isRed = true;
-                    sibling(y)->isRed = true;
+                    sibling(y, y->parent)->isRed = true;
                     return x;
                 }
             }
         } else {
             y->isRed = false;
             y->parent->isRed = true;
-            sibling(y)->isRed = false;
+            sibling(y, y->parent)->isRed = false;
             return y->parent;
         }
     }
@@ -113,10 +113,11 @@ class RBTree {
         zigright(y->parent);
     }
 
-    node* sibling(node* n) {
-        if (!n || !n->parent)       return nullptr;
-        if (n->parent->left == n)   return n->parent->right;
-        return n->parent->left;
+    node* sibling(node* n, node* parent) {
+        if (!parent) return nullptr;
+        if (!n)      return parent->left ? parent->left : parent->right;
+        if (parent->left == n) return parent->right;
+        return parent->left;
     }
 
     void print_node(string prefix, node* n, bool isLeft) {
@@ -180,6 +181,146 @@ class RBTree {
         }
 
         root->isRed = false;
+        return true;
+    }
+
+    bool remove(int num) {
+        node* n = search(num);
+
+        if (!n) return false;
+        
+        // u is the node physically being removed, v is a child of u
+        node *u, *v;
+
+        /* ------------- BST DELETE ------------- */ 
+
+        // (1) if both children exist, find smallest number in right subtree and use its value to replace it
+        // note: u will be the smallest number in the right subtree
+        if (n->left && n->right) {
+            u = n->right;
+
+            while (u->left != nullptr) {
+                u = u->left;
+            }
+            n->elem = u->elem;
+        }
+        // note: else, u will be the original found node
+        else {
+            u = n;
+        }
+
+        // find a valid child of u
+        v = u->left ? u->left : u->right;
+
+        // (2) if one child exist, connect child to the node's parent
+        if (v) {
+            v->parent = u->parent;
+        }
+        if (u->parent) {
+            if (u == u->parent->left) {
+                u->parent->left = v;
+            } else {
+                u->parent->right = v;
+            }
+        } else {
+            root = v;
+        }
+
+        /* ------------- EASY EDGE CASES ------------- */
+
+        // if removed node u is RED, no fixes, return
+        if (u->isRed) {
+            delete u;
+        } else {
+            // if removed node u is BLACK but child is RED, recolor v to BLACK, return
+            if (v && v->isRed) {
+                v->isRed = false;
+                delete u;
+            } else {
+                /* ------------- DOUBLE BLACK CASES ------------- */
+                
+                // initialize:  mark node v as db (doubleblack)
+                //              let node par be parent of db (used parent of u since db can be null)
+                //              let node w be a sibling of db
+                node* db = v;
+                node* par = u->parent;
+                node* w = sibling(db, par);
+                delete u;
+
+                while (true) {
+                    // Base Case: db is at the root, meaning par is null and w will be also null
+                    if (!par)   break;
+
+                    // Case 1: w is RED
+                    // do rotation about w and z (w->parent); will be either Case 2 or 3 after adjustment
+                    // w will be BLACK, z will be RED
+                    // rotation causes db to have a new sibling, therefore update node w to be the new sibling of db
+                    if (w && w->isRed) {
+                        node* z = w->parent;
+                        if (z->left == w) {
+                            zigright(w);
+                        } else {
+                            zigleft(w);
+                        }
+                        w->isRed = false;
+                        z->isRed = true;
+
+                        w = sibling(db, par);
+                    }
+                    
+                    if (!w || !w->isRed) {
+                    // Case 2: w is BLACK, both children are BLACK
+                    // recoloring: w to RED, if w->parent is RED then turn to BLACK and finish, if w->parent is BLACK then db = w->parent
+                    // if db is changed, update also par and w
+                        if ((!w->left || !w->left->isRed) && (!w->right || !w->right->isRed)) {
+                            w->isRed = true;
+                            if (w->parent->isRed == true) {
+                                w->parent->isRed = false;
+                                break;
+                            } else {
+                                db = w->parent;
+                                par = db->parent;
+                                w = sibling(db, par);
+                            }
+                        }
+                    // Case 3: w is BLACK, has RED child x
+                    // restructure between x, y (parent of x), and z (grandparent of x)
+                    // recoloring: x and z to BLACK, y to the former color of z
+                    // finish
+                        else {
+                            node *x, *y, *z;
+                            if (w->left && w->left->isRed) {
+                                x = w->left;
+                            } else {
+                                x = w->right;
+                            }
+                            y = x->parent;
+                            z = y->parent;
+
+                            if (y == z->left) {
+                                if (x == y->left) {
+                                    zigright(y);
+                                } else {
+                                    zigzagright(y);
+                                }
+                            } else {
+                                if (x == y->left) {
+                                    zigzagleft(y);
+                                } else {
+                                    zigleft(y);
+                                }
+                            }
+
+                            y->isRed = z->isRed;
+                            x->isRed = false;
+                            z->isRed = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         return true;
     }
 
