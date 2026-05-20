@@ -1,0 +1,41 @@
+Job Scheduling Problem
+
+A problem where you have a set of jobs, each with a deadline and a profit, and you can only execute one job at a time. Each job takes one unit of time to complete.
+
+Goal
+
+Select and schedule jobs within their deadlines to maximize total profit.
+
+Best Algorithm Design Approach
+
+Greedy — always prioritize the job with the highest profit, and schedule it as late as possible within its deadline to leave earlier slots open for other jobs.
+
+Algorithm Flow
+
+1. Sort jobs in descending order of profit
+2. Find the maximum deadline — this determines the number of available time slots
+3. Initialize all time slots as empty
+4. For each job in sorted order:
+    - Starting from its deadline, find the latest available slot
+    - If a slot is found, assign the job to that slot
+    - If no slot is available before or at its deadline, skip the job
+5. Return the scheduled jobs and total profit
+
+Example
+
+4 jobs, each takes 1 unit of time
+
+Job     Deadline    Profit
+A       2           100
+B       1           50
+C       2           10
+D       1           20
+
+Sorted by profit: A → B → D → C. Max deadline = 2, slots = [_, _].
+
+Job A (deadline 2): try slot 2 → empty, assign. Slots = [_, A]
+Job B (deadline 1): try slot 1 → empty, assign. Slots = [B, A]
+Job D (deadline 1): try slot 1 → taken, no earlier slot → skip
+Job C (deadline 2): try slot 2 → taken, try slot 1 → taken → skip
+
+Answer: Jobs B and A scheduled, total profit = 150.
