@@ -1,0 +1,32 @@
+N-Queens
+
+A backtracking algorithm that places N queens on an N×N chessboard such that no two queens threaten each other.
+
+Goal
+
+Place N queens on the board so that no two queens share the same row, column, or diagonal.
+
+Algorithm Flow
+
+1. Start at the first row
+2. Try placing a queen in each column of the current row
+3. For each placement, check if it is valid — not in the same column or either diagonal as any previously placed queen
+4. If valid, place the queen and recurse on the next row
+5. If the recursion fails, remove the queen (backtrack) and try the next column
+6. If no column works in the current row, return false to trigger backtracking in the previous row
+7. If all N queens are placed successfully, return the solution
+
+Example
+N = 4, board is 4×4
+
+Row 0: try col 0 → valid, place queen
+Row 1: try col 0 → same column, skip. Try col 1 → diagonal conflict, skip. Try col 2 → valid, place queen
+Row 2: try col 0 → diagonal conflict, skip. Try col 1 → diagonal conflict, skip. Try col 2 → same column, skip. Try col 3 → diagonal conflict, skip. No column works → backtrack to row 1
+Row 1: try col 3 → valid, place queen
+Row 2: try col 0 → diagonal conflict, skip. Try col 1 → valid, place queen
+Row 3: try col 0 → diagonal conflict, skip. Try col 1 → same column, skip. Try col 2 → diagonal conflict, skip. Try col 3 → same column, skip. No column works → backtrack to row 2
+Row 2: try col 2 → diagonal conflict, skip. Try col 3 → diagonal conflict. No column works → backtrack to row 1. No more columns → backtrack to row 0
+Row 0: try col 1 → valid, place queen
+Continue until a valid arrangement is found
+
+Answer: One valid solution for N=4 is queens at columns 1, 3, 0, 2 (one per row).
