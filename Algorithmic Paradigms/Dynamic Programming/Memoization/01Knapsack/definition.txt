@@ -1,0 +1,34 @@
+0/1 Knapsack
+
+A top-down recursive approach that breaks the problem into subproblems — for each item, either take it or leave it — and caches results to avoid recomputation.
+
+Goal
+
+Maximize total value without exceeding capacity W, using a cache to store already-solved subproblems.
+
+Algorithm Flow
+
+1. Create a 2D memo table of size n × W initialized to -1
+2. Start the recursive call at the last item with full capacity W
+3. At each call knapsack(i, w) — best value considering item i down to item 0 with remaining capacity w:
+    - If the subproblem is already cached, return it
+    - If item i doesn't fit, skip it and recurse on the previous item
+    - Otherwise take the max of skipping or taking the item, recurse accordingly
+4. Store and return the result in the memo table
+5. Answer is at knapsack(n-1, W)
+
+Example
+
+Capacity W = 5
+Item    Weight  Value
+A       2       3
+B       3       4
+C       4       5
+
+Call knapsack on item C with capacity 5 — take or skip
+Skip C, move to B
+Take B, recurse on A with remaining capacity 2 → value 3
+Skip B, recurse on A with capacity 5 → value 3
+Best from B level is 7
+Cache and bubble up
+Answer: 7 (items A + B)

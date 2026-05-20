@@ -1,0 +1,25 @@
+0/1 Knapsack
+
+A bottom-up iterative approach that fills a 2D table representing the max value using the first i items with capacity w.
+
+Goal
+
+Maximize total value without exceeding capacity W, by building the solution from the smallest subproblems up.
+
+Algorithm Flow
+
+1. Create a 2D table dp[n+1][W+1] initialized to 0
+2. Iterate over each item i from 1 to n
+3. For each capacity w from 0 to W:
+    - If item i doesn't fit, carry over the value from the previous row
+    - Otherwise, take the max between skipping the item or taking it and adding its value to the best result with the remaining capacity
+4. Answer is at dp[n][W]
+
+Example
+Same items, capacity W = 5
+        0   1   2   3   4   5
+0       0   0   0   0   0   0
+A(2,3)  0   0   3   3   3   3
+B(3,4)  0   0   3   4   4   7
+C(4,5)  0   0   3   4   5   7
+Answer: dp[3][5] = 7 (items A + B).
